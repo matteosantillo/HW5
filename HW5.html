@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arrests by Age within the City of Pittsburgh (Fall 2016)</title>
+</head>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+crossorigin=""/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""></script>
+
+     <style>
+    #map { height: 550px; width: 1000px; }
+    .slider-container {
+        margin-right: 20px;
+        display: flex;
+        align-items: left;
+        flex-direction: column;
+    }
+    .slider {
+        width: 550px;
+    }
+    .tick-container {
+        display: flex;
+        justify-content: space-between;
+        width: 550px;
+        margin-top: 5px;
+    }
+    .tick {
+        font-size: 12px;
+        color: #888;
+    }
+</style>
+<script src="./Arrests.js"></script>                 
+<body>
+    <h1>Arrest Data by Age</h1>
+    <h3>Use the slider below to filter arrests by age.</h3>
+
+    <div class="slider-container">
+        <input type="range" min="15" max="70" value="30" class="slider" id="ageSlider" oninput="updateMap()">
+        <div class="tick-container">
+            <span class="tick">15</span>
+            <span class="tick">25</span>
+            <span class="tick">35</span>
+            <span class="tick">45</span>
+            <span class="tick">55</span>
+            <span class="tick">65</span>
+            <span class="tick">75</span>
+            <span class="tick">85</span>
+            <span class="tick">95</span>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+    var map = L.map('map').setView([40.4406, -79.9959], 12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+    
+    var layerGroup = L.layerGroup().addTo(map);
+
+function updateMap() {
+    layerGroup.clearLayers(); 
+    var selectedAge = document.getElementById('ageSlider').value;
+    var markers = []; 
+    for (var i = 0; i < arrests.features.length; i++) {
+    var arrest = arrests.features[i];
+    var arrestAge = arrest.properties.age;
+
+    if (arrestAge <= selectedAge) {
+    var coordinates = arrest.geometry.coordinates;
+    var marker = L.circleMarker([coordinates[1], coordinates[0]], { radius: 3, color: "red", fillColor: "red", fillOpacity: 1 });
+markers.push(marker);}}
+ L.layerGroup(markers).addTo(layerGroup);}
+    </script>
+</body>
+</html>
